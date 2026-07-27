@@ -18,7 +18,7 @@ AixScan/
 └── README.md                           # Project description
 ```
 
-Example workflow:
+Example AixScan workflow:
 ```bash
   ┌───────────────────────┐          ┌───────────────────────┐
   │  Camera Module        │          │  HX711 Load Cell      │
@@ -40,4 +40,18 @@ Example workflow:
            │ Output Result:                      │
            │ "Smartphone (98.4% Confidence)"     │
            └─────────────────────────────────────┘
+```
+
+(NUCLEO) STM Board firmware install/update process:
+```bash
+┌────────────────────────┐      ┌────────────────────────┐      ┌────────────────────────┐
+│ 1. Import TFLite Model │ ───> │ 2. Convert to C Code   │ ───> │ 3. Write Hardware Drivers│
+│    in STM32CubeMX      │      │    via X-CUBE-AI       │      │    (Camera + Load Cell) │
+└────────────────────────┘      └────────────────────────┘      └────────────────────────┘
+                                                                            │
+                                                                            ▼
+┌────────────────────────┐                                      ┌────────────────────────┐
+│ 5. Monitor Output      │ <─────────────────────────────────── │ 4. Flash Firmware via  │
+│    over Serial (UART)  │                                      │    STM32CubeIDE        │
+└────────────────────────┘                                      └────────────────────────┘
 ```
