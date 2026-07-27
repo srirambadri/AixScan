@@ -44,10 +44,10 @@ Example AixScan workflow:
 
 (NUCLEO) STM Board firmware install/update process:
 ```bash
-┌────────────────────────┐      ┌────────────────────────┐      ┌────────────────────────┐
-│ 1. Import TFLite Model │ ───> │ 2. Convert to C Code   │ ───> │ 3. Write Hardware Drivers│
-│    in STM32CubeMX      │      │    via X-CUBE-AI       │      │    (Camera + Load Cell) │
-└────────────────────────┘      └────────────────────────┘      └────────────────────────┘
+┌────────────────────────┐      ┌────────────────────────┐      ┌───────────────────────────┐
+│ 1. Import TFLite Model │ ───> │ 2. Convert to C Code   │ ───> │ 3. Write Hardware Drivers │
+│    in STM32CubeMX      │      │    via X-CUBE-AI       │      │    (Camera + Load Cell)   │
+└────────────────────────┘      └────────────────────────┘      └───────────────────────────┘
                                                                             │
                                                                             ▼
 ┌────────────────────────┐                                      ┌────────────────────────┐
