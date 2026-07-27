@@ -13,7 +13,6 @@ AixScan/
 │   ├── test_pipeline.py                # Multi-modal training + TFLite export
 │   ├── predict.py                      # Single-item inference CLI script
 │   └── continuous_eval.py              # Continuous loop testing script
-├── firmware/                           # (For STM32 C/C++ project code)
 ├── .gitignore                          # Ignores large models & temp files
 └── README.md                           # Project description
 ```
@@ -54,4 +53,34 @@ Example AixScan workflow:
 │ 5. Monitor Output      │ <─────────────────────────────────── │ 4. Flash Firmware via  │
 │    over Serial (UART)  │                                      │    STM32CubeIDE        │
 └────────────────────────┘                                      └────────────────────────┘
+```
+Example dataset:
+```bash
+dataset/
+├── metadata.csv          # Central multimodal mapping file (links images + weights -> classes)
+└── images/               # Raw input images folder
+    ├── cable/            # (Optional) Subfolders by class for easy manual sorting
+    │   ├── cable_01.jpg
+    │   └── cable_02.jpg
+    ├── smartphone/
+    │   ├── smartphone_01.jpg
+    │   └── smartphone_02.jpg
+    ├── feature_phone/
+    │   ├── featurephone_01.jpg
+    │   └── featurephone_02.jpg
+    └── battery/
+        ├── battery_01.jpg
+        └── battery_02.jpg
+```
+metadata.csv 
+```bash
+filename,weight_g,label
+images/cable/cable_01.jpg,42.5,cable
+images/cable/cable_02.jpg,38.0,cable
+images/smartphone/smartphone_01.jpg,185.0,smartphone
+images/smartphone/smartphone_02.jpg,172.3,smartphone
+images/feature_phone/featurephone_01.jpg,95.0,feature_phone
+images/feature_phone/featurephone_02.jpg,102.1,feature_phone
+images/battery/battery_01.jpg,280.0,battery
+images/battery/battery_02.jpg,310.5,battery
 ```
