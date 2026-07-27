@@ -17,3 +17,27 @@ AixScan/
 ├── .gitignore                          # Ignores large models & temp files
 └── README.md                           # Project description
 ```
+
+Example workflow:
+```bash
+  ┌───────────────────────┐          ┌───────────────────────┐
+  │  Camera Module        │          │  HX711 Load Cell      │
+  │  Captures Photo       │          │  Measures Weight (g)  │
+  └───────────┬───────────┘          └───────────┬───────────┘
+              │                                  │
+              │ 224x224 RGB                      │ Float (e.g., 185.0g)
+              ▼                                  ▼
+ ┌────────────────────────────────────────────────────────────┐
+ │              aixscan_classifier.c (NUCLEO MCU)             │
+ │                                                            │
+ │  • Passes image into Model Input 0                         │
+ │  • Passes weight into Model Input 1                        │
+ │  • Runs X-CUBE-AI inference engine                         │
+ └────────────────────────────┬───────────────────────────────┘
+                              │
+                              ▼
+           ┌─────────────────────────────────────┐
+           │ Output Result:                      │
+           │ "Smartphone (98.4% Confidence)"     │
+           └─────────────────────────────────────┘
+```
