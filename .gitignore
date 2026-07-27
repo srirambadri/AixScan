@@ -1,0 +1,28 @@
+# Python / Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Virtual Environments
+venv/
+.venv/
+env/
+
+# Data & Output Models (Track structure, ignore local binary assets)
+*.tflite
+*.h5
+*.keras
+dataset/images/
+
+# C / C++ / STM32 Build Artifacts
+firmware/Debug/
+firmware/Release/
+*.o
+*.elf
+*.bin
+
+# IDE Configurations
+.vscode/
+.idea/
+*.swp
