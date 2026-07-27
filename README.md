@@ -1,7 +1,7 @@
 # AixScan
 AixScan: Edge AI E-Waste Classifier AixScan is an embedded machine learning system designed for STM32 microcontrollers to classify electronic waste using multi-modal sensor fusion (computer vision + weight data).
 
-
+```bash
 AixScan/
 ├── .github/
 │   └── workflows/
@@ -16,3 +16,4 @@ AixScan/
 ├── firmware/                           # (For STM32 C/C++ project code)
 ├── .gitignore                          # Ignores large models & temp files
 └── README.md                           # Project description
+```
