@@ -34,7 +34,7 @@ def predict_single_item(tflite_model_path, image_path, weight_g):
             interpreter.set_tensor(detail["index"], weight_tensor)
 
     interpreter.invoke()
-    predictions = interpreter.get_tensor(output_details[0][0])
+    predictions = interpreter.get_tensor(output_details[0]['index'])[0]
     
     predicted_class_id = np.argmax(predictions)
     confidence = predictions[predicted_class_id] * 100.0

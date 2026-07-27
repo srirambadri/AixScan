@@ -59,7 +59,7 @@ def representative_data_gen(X_img, X_w):
 
 def run():
     csv_path = "dataset/metadata.csv"
-    img_dir = "dataset/images"
+    img_dir = "dataset/"
 
     if os.path.exists(csv_path) and os.path.exists(img_dir) and len(os.listdir(img_dir)) > 0:
         print("📂 Loading dataset from disk...")

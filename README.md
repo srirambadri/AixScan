@@ -84,11 +84,26 @@ images/feature_phone/featurephone_02.jpg,102.1,feature_phone
 images/battery/battery_01.jpg,280.0,battery
 images/battery/battery_02.jpg,310.5,battery
 ```
+
 ## Download Dataset
 ```bash
 # 1. Make the script executable
 chmod +x download_dataset.sh
-
 # 2. Run the script
 ./download_dataset.sh
+```
+
+## Run the Multi-Modal Training Pipeline
+```bash
+python model_training/test_pipeline.py
+```
+
+## Predict on a Single Test File
+```bash
+python model_training/predict.py --image dataset/images/Smartphone/photo1.jpg --weight 180.0
+```
+
+## Launch Interactive Evaluation Mode
+```bash
+python model_training/continuous_eval.py
 ```
