@@ -5,7 +5,7 @@
 # ==============================================================================
 
 # 🔗 Paste your public Google Drive URL or Folder ID below
-GDRIVE_LINK="YOUR_GOOGLE_DRIVE_FOLDER_OR_FILE_URL_HERE"
+GDRIVE_LINK="https://drive.google.com/drive/folders/1un83NbJZZFe9ySsH8FXvQF9xfpdiydc8?usp=sharing"
 
 DATASET_DIR="dataset"
 

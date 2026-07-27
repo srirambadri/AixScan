@@ -84,3 +84,11 @@ images/feature_phone/featurephone_02.jpg,102.1,feature_phone
 images/battery/battery_01.jpg,280.0,battery
 images/battery/battery_02.jpg,310.5,battery
 ```
+## Download Dataset
+```bash
+# 1. Make the script executable
+chmod +x download_dataset.sh
+
+# 2. Run the script
+./download_dataset.sh
+```
