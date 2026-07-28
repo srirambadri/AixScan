@@ -9,7 +9,7 @@ import pandas as pd
 IMG_SIZE = (224, 224)
 BATCH_SIZE = 16
 EPOCHS = 20
-MODEL_PATH = "autoencoder_model.h5"
+MODEL_PATH = "autoencoder_model.keras"
 TFLITE_PATH = "aixscan_autoencoder.tflite"
 
 def load_smartphone_data(csv_path="dataset/metadata.csv", img_dir="dataset"):
@@ -56,7 +56,7 @@ def build_autoencoder():
 
     # Autoencoder maps [image, weight] -> reconstructed [image]
     autoencoder = models.Model(inputs=[img_input, weight_input], outputs=decoded_img)
-    autoencoder.compile(optimizer="adam", loss="mse")
+    autoencoder.compile(optimizer="adam", loss="mean_squared_error")
     return autoencoder
 
 def convert_to_tflite(model):

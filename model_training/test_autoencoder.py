@@ -1,9 +1,13 @@
 import numpy as np
 import tensorflow as tf
-from train_autoencoder import load_smartphone_data, MODEL_PATH
+from train_autoencoder import load_smartphone_data
+
+# Match the updated file extension
+MODEL_PATH = "autoencoder_model.keras"
 
 def evaluate_reconstruction_threshold():
-    model = tf.keras.models.load_model(MODEL_PATH)
+    # Pass compile=False to bypass Keras 3 loss deserialization
+    model = tf.keras.models.load_model(MODEL_PATH, compile=False)
     X_img, X_w = load_smartphone_data()
 
     reconstructions = model.predict({"image_input": X_img, "weight_input": X_w})

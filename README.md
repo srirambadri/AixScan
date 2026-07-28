@@ -118,5 +118,6 @@ python model_training/test_autoencoder.py
 ```
 ### Test Model
 ```bash
-python model_training/predict_autoencoder.py --image test_cable.jpg --weight 10.0
+python model_training/predict_autoencoder.py --image dataset/images/Smartphone/photo1.jpg --weight 180.0
+python model_training/predict_autoencoder.py --image dataset/validation/test_cable.jpg --weight 10.0
 ```
