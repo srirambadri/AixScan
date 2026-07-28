@@ -92,18 +92,31 @@ chmod +x download_dataset.sh
 # 2. Run the script
 ./download_dataset.sh
 ```
+## Multi-Modal classifier
 
-## Run the Multi-Modal Training Pipeline
+### Train Model
 ```bash
 python model_training/test_pipeline.py
 ```
-
-## Predict on a Single Test File
+### Predict on a Single Test File
 ```bash
 python model_training/predict.py --image dataset/images/Smartphone/photo1.jpg --weight 180.0
 ```
-
-## Launch Interactive Evaluation Mode
+### Launch Interactive Evaluation Mode
 ```bash
 python model_training/continuous_eval.py
+```
+
+## Autoencoder / Anomaly Detection (One-Class Model)
+### Train Model
+```bash
+python model_training/train_autoencoder.py
+```
+### Find Threshold
+```bash
+python model_training/test_autoencoder.py
+```
+### Test Model
+```bash
+python model_training/predict_autoencoder.py --image test_cable.jpg --weight 10.0
 ```
