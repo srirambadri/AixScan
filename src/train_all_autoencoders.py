@@ -1,6 +1,6 @@
 import os
 
-# 1. Force single-threaded CPU execution & disable oneDNN
+# 1. Force single-threaded CPU execution & disable oneDNN locks
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 os.environ["OMP_NUM_THREADS"] = "1"
 os.environ["TF_NUM_INTRAOP_THREADS"] = "1"
@@ -26,13 +26,10 @@ EPOCHS = 15
 BATCH_SIZE = 8
 
 def export_tflite(model, output_path):
-    """Safely converts model to TFLite without deadlocking the C++ mutex."""
-    # Force conversion strictly on single-threaded CPU context
+    """Safely converts model to TFLite without deadlocking."""
     with tf.device("/CPU:0"):
         converter = tf.lite.TFLiteConverter.from_keras_model(model)
         converter.optimizations = [tf.lite.Optimize.DEFAULT]
-        # Bypasses experimental graph optimizer threadlocks
-        converter.experimental_new_converter = True 
         tflite_model = converter.convert()
         
     with open(output_path, "wb") as f:
@@ -45,7 +42,6 @@ def train_all():
 
     thresholds = {}
 
-    # Run everything explicitly on single CPU scope
     with tf.device("/CPU:0"):
         for label in unique_labels:
             print(f"\n==================================================")
@@ -62,14 +58,12 @@ def train_all():
 
             model = build_single_class_autoencoder()
             
-            # Train safely on main thread
+            # Keras 3 compatible model.fit call
             model.fit(
                 {"image_input": X_img, "weight_input": X_w},
                 X_img,
                 epochs=EPOCHS,
                 batch_size=BATCH_SIZE,
-                use_multiprocessing=False,
-                workers=0,
                 verbose=1
             )
 
