@@ -3,30 +3,43 @@ from rclpy.node import Node
 from std_msgs.msg import String
 import serial
 
-class STM32LogReceiver(Node):
+class STM32BridgeNode(Node):
     def __init__(self):
-        super().__init__('stm32_log_receiver')
-        self.publisher_ = self.create_publisher(String, 'stm32_logs', 10)
+        super().__init__('stm32_bridge_node')
         
-        # Update with your serial port and baud rate
+        # Publisher for incoming logs from STM32
+        self.log_publisher = self.create_publisher(String, 'stm32_logs', 10)
+        
+        # Subscriber for outgoing commands to STM32
+        self.subscription = self.create_subscription(
+            String,
+            'command',
+            self.command_callback,
+            10
+        )
+        
+        # Single serial port instance for both reading and writing
         self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.1)
         self.timer = self.create_timer(0.01, self.read_logs)
         
-        # Open a local file to save the incoming log stream
         self.log_file = open("stm32_received_log.txt", "w", encoding="utf-8")
+
+    def command_callback(self, msg):
+        # Write command from ROS 2 topic out to STM32 over serial
+        command_str = msg.data.strip() + '\r\n'
+        self.ser.write(command_str.encode('utf-8'))
+        self.get_logger().info(f"Sent to STM32: {msg.data}")
 
     def read_logs(self):
         if self.ser.in_waiting > 0:
             line = self.ser.readline().decode('utf-8', errors='ignore')
             if line:
-                # Save to local text file
                 self.log_file.write(line)
                 self.log_file.flush()
                 
-                # Publish to ROS 2 topic
-                msg = String()
-                msg.data = line.strip()
-                self.publisher_.publish(msg)
+                out_msg = String()
+                out_msg.data = line.strip()
+                self.log_publisher.publish(out_msg)
 
     def destroy_node(self):
         self.log_file.close()
@@ -35,7 +48,7 @@ class STM32LogReceiver(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = STM32LogReceiver()
+    node = STM32BridgeNode()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
