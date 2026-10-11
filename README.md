@@ -29,3 +29,7 @@ source install/setup.bash
 ### Run
 ```bash
 ros2 run stm32_bridge log_receiver```
+
+Open new terminal and execute example command: 
+```bash
+ros2 topic pub --once /command std_msgs/msg/String "{data: 'hx711 read'}"```
