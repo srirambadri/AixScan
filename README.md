@@ -1,5 +1,8 @@
-# AixScan
-AixScan: Edge AI E-Waste Classifier AixScan is an embedded machine learning system designed for STM32 microcontrollers to classify electronic waste using multi-modal sensor fusion (computer vision + weight data).
+# Hardware Check
+
+## Communication SMT Microcontroller
+
+This is a ROS 2 package for displaying SMT log
 
 ```bash
 hardware_check/
@@ -14,3 +17,15 @@ hardware_check/
             ├── __init__.py
             └── log_receiver.py            
 ```
+
+### Installation
+
+```bash
+cd ~/hardware_check
+colcon build --packages-select stm32_bridge
+source install/setup.bash
+```
+
+### Run
+```bash
+ros2 run stm32_bridge log_receiver```
