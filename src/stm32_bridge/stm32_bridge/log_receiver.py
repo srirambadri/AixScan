@@ -18,8 +18,16 @@ class STM32BridgeNode(Node):
             10
         )
         
+        # Serial settings, overridable at launch:
+        #   ros2 run stm32_bridge log_receiver --ros-args -p serial_port:=/dev/ttyACM0
+        self.declare_parameter('serial_port', '/dev/ttyUSB0')
+        self.declare_parameter('baud_rate', 115200)
+        port = self.get_parameter('serial_port').value
+        baud = self.get_parameter('baud_rate').value
+
         # Single serial port instance for both reading and writing
-        self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.1)
+        self.ser = serial.Serial(port, baud, timeout=0.1)
+        self.get_logger().info(f"Opened {port} at {baud} baud")
         self.timer = self.create_timer(0.01, self.read_logs)
         
         self.log_file = open("stm32_received_log.txt", "w", encoding="utf-8")
@@ -49,9 +57,15 @@ class STM32BridgeNode(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = STM32BridgeNode()
-    rclpy.spin(node)
-    node.destroy_node()
-    rclpy.shutdown()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        # Runs on Ctrl-C too, so the log file is flushed and the port released
+        node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 if __name__ == '__main__':
     main()

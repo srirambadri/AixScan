@@ -20,8 +20,16 @@ hardware_check/
 
 ### Installation
 
+Install the dependencies (`rclpy`, `std_msgs`, `pyserial`):
+
 ```bash
 cd ~/hardware_check
+rosdep install --from-paths src --ignore-src -r -y
+```
+
+Then build and source the workspace:
+
+```bash
 colcon build --packages-select stm32_bridge
 source install/setup.bash
 ```
@@ -29,6 +37,13 @@ source install/setup.bash
 ### Run
 ```bash
 ros2 run stm32_bridge log_receiver
+```
+
+The serial port and baud rate are ROS parameters, defaulting to `/dev/ttyUSB0` and
+`115200`. Override them if the board enumerates elsewhere:
+
+```bash
+ros2 run stm32_bridge log_receiver --ros-args -p serial_port:=/dev/ttyACM0 -p baud_rate:=9600
 ```
 
 Open new terminal and execute example command: 
