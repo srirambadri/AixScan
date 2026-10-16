@@ -5,7 +5,7 @@
 This is a ROS 2 package for displaying SMT log
 
 ```bash
-hardware_check/
+AixScan/
 └── src/
     └── stm32_bridge/
         ├── package.xml
@@ -23,7 +23,7 @@ hardware_check/
 Install the dependencies (`rclpy`, `std_msgs`, `pyserial`):
 
 ```bash
-cd ~/hardware_check
+cd ~/AixScan
 rosdep install --from-paths src --ignore-src -r -y
 ```
 
