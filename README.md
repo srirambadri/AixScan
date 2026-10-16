@@ -35,18 +35,26 @@ source install/setup.bash
 ```
 
 ### Run
+
+#### Terminal 1
 ```bash
 ros2 run stm32_bridge log_receiver
 ```
-
-The serial port and baud rate are ROS parameters, defaulting to `/dev/ttyACM0` and
-`115200`. Pass them explicitly if you need to be sure:
-
+The serial port and baud rate are ROS parameters, defaulting to `/dev/ttyACM0` and `115200`. 
+Pass them explicitly if you need to be sure:
 ```bash
 ros2 run stm32_bridge log_receiver --ros-args -p serial_port:=/dev/ttyACM0 -p baud_rate:=115200
 ```
-
-Open new terminal and execute example command: 
+#### Terminal 2
+```bash
+ros2 topic echo /stm32_logs
+```
+#### Terminal 3
 ```bash
 ros2 topic pub --once /command std_msgs/msg/String "{data: 'hx711 read'}"
 ```
+
+
+
+
+
