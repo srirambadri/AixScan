@@ -20,7 +20,7 @@ class STM32BridgeNode(Node):
         
         # Serial settings, overridable at launch:
         #   ros2 run stm32_bridge log_receiver --ros-args -p serial_port:=/dev/ttyACM0
-        self.declare_parameter('serial_port', '/dev/ttyUSB0')
+        self.declare_parameter('serial_port', '/dev/ttyACM0')
         self.declare_parameter('baud_rate', 115200)
         port = self.get_parameter('serial_port').value
         baud = self.get_parameter('baud_rate').value
