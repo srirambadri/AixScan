@@ -41,6 +41,20 @@ class STM32BridgeNode(Node):
         self.ser.write(command_str.encode('utf-8'))
         self.get_logger().info(f"Sent to STM32: {msg.data}")
 
+    def is_garbage(self, line):
+        """True for lines that aren't real board output.
+
+        A baud mismatch turns clean text into bytes that either fail to decode
+        (U+FFFD after errors='replace') or decode to control/box-drawing junk,
+        so a line is rejected on either count.
+        """
+        if '�' in line:
+            return True
+        # Tabs are legitimate in column-formatted board output, but
+        # str.isprintable() rejects them
+        printable = sum(1 for ch in line if ch.isprintable() or ch == '\t')
+        return printable < len(line) * 0.8
+
     def read_logs(self):
         # read(in_waiting) never blocks, unlike readline(), which would stall
         # this callback - and the /command subscription with it - for up to
@@ -56,10 +70,18 @@ class STM32BridgeNode(Node):
             raw, _, rest = self.rx_buffer.partition(b'\n')
             self.rx_buffer = bytearray(rest)
 
-            # errors='replace' so a baud mismatch shows up as garbage
-            # rather than silently vanishing
+            # errors='replace' marks undecodable bytes so is_garbage can spot
+            # them, rather than 'ignore' quietly deleting them
             line = raw.decode('utf-8', errors='replace').strip()
             if not line:
+                continue
+
+            if self.is_garbage(line):
+                # Keep it out of the topic and the log file, but don't go
+                # silent about it - silence here looks exactly like a dead port
+                self.get_logger().warning(
+                    f"Dropped {len(raw)} unreadable bytes - wrong baud_rate?",
+                    throttle_duration_sec=5.0)
                 continue
 
             self.log_file.write(line + '\n')

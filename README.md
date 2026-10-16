@@ -39,11 +39,11 @@ source install/setup.bash
 ros2 run stm32_bridge log_receiver
 ```
 
-The serial port and baud rate are ROS parameters, defaulting to `/dev/ttyUSB0` and
-`115200`. Override them if the board enumerates elsewhere:
+The serial port and baud rate are ROS parameters, defaulting to `/dev/ttyACM0` and
+`115200`. Pass them explicitly if you need to be sure:
 
 ```bash
-ros2 run stm32_bridge log_receiver --ros-args -p serial_port:=/dev/ttyACM0 -p baud_rate:=9600
+ros2 run stm32_bridge log_receiver --ros-args -p serial_port:=/dev/ttyACM0 -p baud_rate:=115200
 ```
 
 Open new terminal and execute example command: 
