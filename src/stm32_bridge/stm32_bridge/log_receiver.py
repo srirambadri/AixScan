@@ -29,7 +29,10 @@ class STM32BridgeNode(Node):
         self.ser = serial.Serial(port, baud, timeout=0.1)
         self.get_logger().info(f"Opened {port} at {baud} baud")
         self.timer = self.create_timer(0.01, self.read_logs)
-        
+
+        # Bytes arrive mid-line, so hold the tail until its terminator shows up
+        self.rx_buffer = bytearray()
+
         self.log_file = open("stm32_received_log.txt", "w", encoding="utf-8")
 
     def command_callback(self, msg):
@@ -39,15 +42,32 @@ class STM32BridgeNode(Node):
         self.get_logger().info(f"Sent to STM32: {msg.data}")
 
     def read_logs(self):
-        if self.ser.in_waiting > 0:
-            line = self.ser.readline().decode('utf-8', errors='ignore')
-            if line:
-                self.log_file.write(line)
-                self.log_file.flush()
-                
-                out_msg = String()
-                out_msg.data = line.strip()
-                self.log_publisher.publish(out_msg)
+        # read(in_waiting) never blocks, unlike readline(), which would stall
+        # this callback - and the /command subscription with it - for up to
+        # the port timeout whenever a line is still only half there.
+        waiting = self.ser.in_waiting
+        if waiting:
+            self.rx_buffer.extend(self.ser.read(waiting))
+
+        # Accept \r\n, \n or bare \r as line endings
+        self.rx_buffer = self.rx_buffer.replace(b'\r\n', b'\n').replace(b'\r', b'\n')
+
+        while b'\n' in self.rx_buffer:
+            raw, _, rest = self.rx_buffer.partition(b'\n')
+            self.rx_buffer = bytearray(rest)
+
+            # errors='replace' so a baud mismatch shows up as garbage
+            # rather than silently vanishing
+            line = raw.decode('utf-8', errors='replace').strip()
+            if not line:
+                continue
+
+            self.log_file.write(line + '\n')
+            self.log_file.flush()
+
+            out_msg = String()
+            out_msg.data = line
+            self.log_publisher.publish(out_msg)
 
     def destroy_node(self):
         self.log_file.close()
