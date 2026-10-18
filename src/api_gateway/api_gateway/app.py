@@ -14,7 +14,33 @@ manually, or run the scan_listener node to auto-launch it on a real scan.
 from flask import Flask, request, render_template, redirect, url_for
 import sqlite3
 import os
+import threading
 from datetime import datetime
+
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import Bool
+
+# Set up by main(); index() publishes through these.
+_ros_node = None
+_scan_publisher = None
+# app.run() serves requests on threads, so two page loads arriving
+# together would otherwise hit the publisher at once
+_publish_lock = threading.Lock()
+
+TOPIC_NAME = "scan_event"
+
+
+def publish_scan_event():
+    """Publish True on TOPIC_NAME to announce that the form was opened."""
+    if _scan_publisher is None:
+        return
+
+    msg = Bool()
+    msg.data = True
+    with _publish_lock:
+        _scan_publisher.publish(msg)
+    _ros_node.get_logger().info(f"Published scan event on /{TOPIC_NAME}")
 
 
 def _template_folder():
@@ -56,6 +82,7 @@ def index():
     scan/session on the machine (e.g. barcode value or a generated UUID).
     """
     session_id = request.args.get("session_id", "")
+    publish_scan_event()
     return render_template("index.html", session_id=session_id)
 
 
@@ -90,12 +117,25 @@ def thank_you():
     return render_template("thank_you.html", name=name)
 
 
-def main():
+def main(args=None):
     """Entry point for `ros2 run api_gateway web_form`."""
+    global _ros_node, _scan_publisher
+
+    rclpy.init(args=args)
+    _ros_node = Node("web_form")
+    # A publisher needs no spinning, so Flask keeps the main thread
+    _scan_publisher = _ros_node.create_publisher(Bool, TOPIC_NAME, 10)
+    _ros_node.get_logger().info(f"Form ready, publishing to /{TOPIC_NAME}")
+
     init_db()
-    # host="0.0.0.0" so it's reachable if the browser/kiosk runs on
-    # a different device/screen than the Flask process (e.g. RVM controller)
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    try:
+        # host="0.0.0.0" so it's reachable if the browser/kiosk runs on
+        # a different device/screen than the Flask process (e.g. RVM controller)
+        app.run(host="0.0.0.0", port=5000, debug=False)
+    finally:
+        _ros_node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 if __name__ == "__main__":

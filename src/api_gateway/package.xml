@@ -3,13 +3,13 @@
 <package format="3">
   <name>api_gateway</name>
   <version>0.0.1</version>
-  <description>ROS 2 gateway for the RVM scanner: turns each scan into a latch_request service call, and serves the optional user-detail web form.</description>
+  <description>ROS 2 gateway for the RVM scanner: serves the user-detail web form and publishes on /scan_event each time the form is opened.</description>
 
   <maintainer email="sriram.badri-ext@ayiram-r3.com">srirambadri</maintainer>
   <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
-  <depend>std_srvs</depend>
+  <depend>std_msgs</depend>
   <exec_depend>python3-flask</exec_depend>
 
   <test_depend>ament_copyright</test_depend>

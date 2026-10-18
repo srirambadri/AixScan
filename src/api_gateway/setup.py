@@ -26,7 +26,6 @@ setup(
     entry_points={
         'console_scripts': [
             'scan_listener = api_gateway.scan_listener:main',
-            'latch_server_stub = api_gateway.latch_server_stub:main',
             'web_form = api_gateway.app:main',
         ],
     },
